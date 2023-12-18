@@ -7,6 +7,12 @@ void environment_render::setup(IDirect3DDevice9* handle_device)
 {
 	this->device = handle_device;
 
+	// setup viewport.
+	this->handle();
+
+	// get our screen size.
+	this->setup_screen();
+
 	// create our fonts.
 	font.push_back(&fonts->segoe_ui);
 	font.push_back(&fonts->segoe_ui_small);
@@ -42,6 +48,9 @@ void environment_render::lost_device()
 
 void environment_render::reset_device()
 {
+	// re-setup our viewport.
+	this->handle();
+
 	// re-setup our fonts.
 	for (auto f : this->font)
 	{
@@ -122,6 +131,42 @@ void environment_render::gradient(int x, int y, int w, int h, color first, color
 	this->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices.data(), sizeof(vertex));
 
 	vertices.clear();
+}
+
+void environment_render::set_viewport(D3DVIEWPORT9 viewport_handle)
+{
+	if (!this->device)
+		return;
+
+	this->device->SetViewport(&viewport_handle);
+}
+
+D3DVIEWPORT9 environment_render::handle()
+{
+	D3DVIEWPORT9 viewport_handle;
+	this->device->GetViewport(&viewport_handle);
+	return viewport_handle;
+}
+
+void environment_render::start_clip(rect area)
+{
+	// save the original viewport to use it later.
+	this->old_viewport = this->handle();
+	D3DVIEWPORT9 handle = { area.x, area.y, area.w, area.h, 0.f, 1.f };
+	this->set_viewport(handle);
+}
+
+void environment_render::end_clip()
+{
+	// reset our clipping.
+	this->set_viewport(this->old_viewport);
+}
+
+void environment_render::setup_screen()
+{
+	D3DVIEWPORT9 view_handle = this->handle();
+	this->screen.w = view_handle.Width;
+	this->screen.h = view_handle.Height;
 }
 
 void environment_render::set_state()
