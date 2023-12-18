@@ -34,9 +34,22 @@ public:
 	void outlined_rect(int x, int y, int w, int h, color color);
 	void gradient(int x, int y, int w, int h, color first, color second, gradient_direction direction = { });
 
+public:
+	void set_viewport(D3DVIEWPORT9 viewport_handle);
+	D3DVIEWPORT9 handle();
+
+	void start_clip(rect area);
+	void end_clip();
+
+	dimension screen;
+
+private:
+	void setup_screen();
+
 private:
 	std::vector<environment_font*> font;
 	IDirect3DDevice9* device = nullptr;
+	D3DVIEWPORT9 old_viewport;
 };
 
 extern environment_render* render;
