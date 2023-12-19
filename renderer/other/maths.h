@@ -144,14 +144,14 @@ class vertex
 {
 public:
 	vertex() : position{ }, coordinate{ }, colour{ } { }
-	vertex(const vector& position, const vector& coordinate, const DWORD colour)
+	vertex(const vector_2d& position, const vector_2d& coordinate, const DWORD colour)
 	{
 		this->position		= position;
 		this->coordinate	= coordinate;
 		this->colour		= colour;
 	}
 
-	vector	position;
-	vector	coordinate;
-	DWORD	colour;
+	vector_2d	position;
+	vector_2d	coordinate;
+	DWORD		colour;
 };
