@@ -6,7 +6,7 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 bool environment_window::setup(const char* class_name, const char* window_name, int width, int height)
 {
-	memset(&this->window_class, 0, sizeof(this->window_class));
+	std::memset(&this->window_class, 0, sizeof(this->window_class));
 	this->window_class.cbSize = sizeof(this->window_class);
 	this->window_class.style = CS_CLASSDC;
 	this->window_class.lpfnWndProc = wndproc;
