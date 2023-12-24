@@ -7,12 +7,12 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 bool environment_window::setup(const char* class_name, const char* window_name, int width, int height)
 {
 	std::memset(&this->window_class, 0, sizeof(this->window_class));
-	this->window_class.cbSize = sizeof(this->window_class);
-	this->window_class.style = CS_CLASSDC;
-	this->window_class.lpfnWndProc = wndproc;
-	this->window_class.hInstance = GetModuleHandle(nullptr);
-	this->window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	this->window_class.lpszClassName = class_name;
+	this->window_class.cbSize			= sizeof(this->window_class);
+	this->window_class.style			= CS_CLASSDC;
+	this->window_class.lpfnWndProc		= wndproc;
+	this->window_class.hInstance		= GetModuleHandle(nullptr);
+	this->window_class.hCursor			= LoadCursor(nullptr, IDC_ARROW);
+	this->window_class.lpszClassName	= class_name;
 	RegisterClassEx(&this->window_class);
 
 	this->window_handle = CreateWindow(this->window_class.lpszClassName, window_name, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, nullptr, nullptr, this->window_class.hInstance, nullptr);
