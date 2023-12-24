@@ -10,12 +10,12 @@ bool environment_directx::setup(HWND handle_window)
 		return false;
 
 	std::memset(&this->present_parameter, 0, sizeof(this->present_parameter));
-	this->present_parameter.Windowed = TRUE;
-	this->present_parameter.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	this->present_parameter.BackBufferFormat = D3DFMT_UNKNOWN;
-	this->present_parameter.EnableAutoDepthStencil = TRUE;
-	this->present_parameter.AutoDepthStencilFormat = D3DFMT_D16;
-	this->present_parameter.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+	this->present_parameter.Windowed				= TRUE;
+	this->present_parameter.SwapEffect				= D3DSWAPEFFECT_DISCARD;
+	this->present_parameter.BackBufferFormat		= D3DFMT_UNKNOWN;
+	this->present_parameter.EnableAutoDepthStencil	= TRUE;
+	this->present_parameter.AutoDepthStencilFormat	= D3DFMT_D16;
+	this->present_parameter.PresentationInterval	= D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	if (FAILED(this->d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, handle_window, D3DCREATE_HARDWARE_VERTEXPROCESSING, &this->present_parameter, &this->device)))
 		return false;
