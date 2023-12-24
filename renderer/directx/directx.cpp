@@ -9,7 +9,7 @@ bool environment_directx::setup(HWND handle_window)
 	if (!this->d3d)
 		return false;
 
-	memset(&this->present_parameter, 0, sizeof(this->present_parameter));
+	std::memset(&this->present_parameter, 0, sizeof(this->present_parameter));
 	this->present_parameter.Windowed = TRUE;
 	this->present_parameter.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	this->present_parameter.BackBufferFormat = D3DFMT_UNKNOWN;
