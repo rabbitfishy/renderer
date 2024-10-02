@@ -15,7 +15,7 @@ void environment_render::setup(IDirect3DDevice9* handle_device)
 
 	// create our fonts.
 	font.push_back(&fonts->segoe_ui);
-	font.push_back(&fonts->segoe_ui_small);
+	font.push_back(&fonts->segoe_ui_bold);
 
 	// setup our fonts.
 	for (auto f : this->font)
@@ -148,18 +148,44 @@ D3DVIEWPORT9 environment_render::handle()
 	return viewport_handle;
 }
 
-void environment_render::start_clip(rect area)
+const void environment_render::start_clip(const rect area)
 {
-	// save the original viewport to use it later.
-	this->old_viewport = this->handle();
-	D3DVIEWPORT9 handle = { area.x, area.y, area.w, area.h, 0.f, 1.f };
-	this->set_viewport(handle);
+	// store our old clip data.
+	this->clip.old.push(std::make_pair(this->clip.push, this->clip.area));
+
+	// store our new clip data.
+	this->clip.push		= true;
+	this->clip.area		= { min(area.x, this->clip.old.top().second.x), min(area.y, this->clip.old.top().second.y), area.w, area.h };
+
+	// enable clipping.
+	RECT clip_area		= { this->clip.area.x, this->clip.area.y, this->clip.area.x + this->clip.area.w, this->clip.area.y + this->clip.area.h };
+	this->device->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+	this->device->SetScissorRect(&clip_area);
 }
 
-void environment_render::end_clip()
+const void environment_render::end_clip()
 {
-	// reset our clipping.
-	this->set_viewport(this->old_viewport);
+	// if we still have clip record in stack.
+	if (!this->clip.old.empty())
+	{
+		this->clip.push		= this->clip.old.top().first;
+		this->clip.area		= this->clip.old.top().second;
+		this->clip.old.pop();
+	}
+	// otherwise we clear clip record stack.
+	else
+		this->clip.clear();
+
+	// if we are pushing clip, apply clipping.
+	if (this->clip.push)
+	{
+		RECT clip_area		= { this->clip.area.x, this->clip.area.y, this->clip.area.x + this->clip.area.w, this->clip.area.y + this->clip.area.h };
+		this->device->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+		this->device->SetScissorRect(&clip_area);
+	}
+	// otherwise we disable clipping.
+	else
+		this->device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 }
 
 void environment_render::setup_screen()
