@@ -49,7 +49,7 @@ public:
 	void line(int x, int y, int w, int h, color color);
 	void filled_rect(int x, int y, int w, int h, color color);
 	void outlined_rect(int x, int y, int w, int h, color color);
-	void gradient(int x, int y, int w, int h, color first, color second, gradient_direction direction = { });
+	void gradient(int x, int y, int w, int h, color first, color second, gradient_direction direction = horizontal);
 
 public:
 	void set_viewport(D3DVIEWPORT9 viewport_handle);
