@@ -1,7 +1,7 @@
 #include "render.h"
 
-environment_render* render = new environment_render;
-render_font* fonts = new render_font;
+environment_render* render	= new environment_render;
+render_font* fonts			= new render_font;
 
 void environment_render::setup(IDirect3DDevice9* handle_device)
 {
@@ -150,42 +150,16 @@ D3DVIEWPORT9 environment_render::handle()
 
 const void environment_render::start_clip(const rect area)
 {
-	// store our old clip data.
-	this->clip.old.push(std::make_pair(this->clip.push, this->clip.area));
-
-	// store our new clip data.
-	this->clip.push		= true;
-	this->clip.area		= { min(area.x, this->clip.old.top().second.x), min(area.y, this->clip.old.top().second.y), area.w, area.h };
-
-	// enable clipping.
-	RECT clip_area		= { this->clip.area.x, this->clip.area.y, this->clip.area.x + this->clip.area.w, this->clip.area.y + this->clip.area.h };
-	this->device->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
-	this->device->SetScissorRect(&clip_area);
+	// save the original viewport to use it later.
+	this->old_viewport		= this->handle();
+	D3DVIEWPORT9 handle		= { area.x, area.y, area.w, area.h, 0.f, 1.f };
+	this->set_viewport(handle);
 }
 
 const void environment_render::end_clip()
 {
-	// if we still have clip record in stack.
-	if (!this->clip.old.empty())
-	{
-		this->clip.push		= this->clip.old.top().first;
-		this->clip.area		= this->clip.old.top().second;
-		this->clip.old.pop();
-	}
-	// otherwise we clear clip record stack.
-	else
-		this->clip.clear();
-
-	// if we are pushing clip, apply clipping.
-	if (this->clip.push)
-	{
-		RECT clip_area		= { this->clip.area.x, this->clip.area.y, this->clip.area.x + this->clip.area.w, this->clip.area.y + this->clip.area.h };
-		this->device->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
-		this->device->SetScissorRect(&clip_area);
-	}
-	// otherwise we disable clipping.
-	else
-		this->device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+	// reset our clipping.
+	this->set_viewport(this->old_viewport);
 }
 
 void environment_render::setup_screen()
