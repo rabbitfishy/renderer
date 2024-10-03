@@ -2,7 +2,6 @@
 #include <vector>
 #include "../include.h"
 #include "font.h"
-#include <stack>
 
 enum gradient_direction : bool
 {
@@ -17,22 +16,6 @@ struct render_font
 };
 
 extern render_font* fonts;
-
-struct clip_info
-{
-	bool push;
-	rect area;
-	std::stack<std::pair<bool, rect>> old;
-
-	void clear()
-	{
-		this->push	= false;
-		this->area	= { };
-
-		while (!this->old.empty())
-			this->old.pop();
-	}
-};
 
 class environment_render
 {
@@ -65,8 +48,8 @@ private:
 
 private:
 	std::vector<environment_font*>	font;
-	clip_info						clip;
 	IDirect3DDevice9*				device = nullptr;
+	D3DVIEWPORT9					old_viewport;
 };
 
 extern environment_render* render;
